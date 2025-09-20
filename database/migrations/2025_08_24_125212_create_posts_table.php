@@ -20,6 +20,7 @@ return new class extends Migration
             $table->bigInteger('id_user')->unsigned();
             $table->string('titre');
             $table->string('description');
+            $table->float('prix',8,2);
 
             $table->foreign('id_categorie')->references('id_categorie')->on('categories');
             $table->foreign('id_user')->references(columns: 'id')->on('users');

@@ -31,6 +31,14 @@
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                         </div>
 
+                        <!-- prix -->
+                        <div>
+                            <label for="prix" class="block text-sm font-medium text-gray-700">Prix</label>
+                            <input type="number" min="0" value="0" step="any" id="prix" name="prix"
+                                   value="{{ old('prix') }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                        </div>
+
                         <!-- Description -->
                         <div>
                             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>

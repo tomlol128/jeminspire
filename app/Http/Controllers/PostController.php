@@ -48,6 +48,7 @@ class PostController extends Controller
         'titre' => 'required|max:100',
         'description' => 'required|max:1000',
         'categorie' => 'required|exists:categories,id_categorie',
+        'prix' => 'required',
         ], [
         // Vous pouvez écrire un message d’erreur distinct par règle de validation fournie plus haut.
         'titre.required' => 'Veuillez inscrire une titre .',
@@ -56,24 +57,31 @@ class PostController extends Controller
         'description.max' => 'Votre description ne peut pas dépasser 1000 caractères.',
         'categorie.required' => 'Veuillez sélectionner une catégorie.', // message pour categorie
         'categorie.exists' => 'La catégorie sélectionnée est invalide.',
+        'prix.required' => 'Veuillez entrer un prix',
         ]);
         if ($validation->fails())
             return back()->withErrors($validation->errors())->withInput();
 
         $contenuFormulaire = $validation->validated();
 
+
+
         $poste = Post::create([
             'id_user' => Auth::id(),
             'id_categorie' => $contenuFormulaire['categorie'],
             'titre' => $contenuFormulaire['titre'],
             'description' => $contenuFormulaire['description'],
+            'prix' => $contenuFormulaire['prix'],
         ]);
 
-        Mail::to($request->user())->send(new ConfrimationPoste($poste));
+        //Mail::to($request->user())->send(new ConfrimationPoste($poste));
 
         return View('post/confirmationPoste');
     }
-
+    public function paiement(int $id)
+    {
+        return view("post/paiementPost", ['poste'=> Post::find($id)]);
+    }
     /**
      * Display the specified resource.
      */

@@ -16,6 +16,7 @@ class Post extends Model
         'id_categorie',
         'titre',
         'description',
+        'prix',
     ];
     public function user()
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Commande;
 use Illuminate\Support\Facades\Log;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
@@ -50,6 +51,7 @@ class CommandeController extends Controller
         } else {
             $amountCents = intval(round($poste->prix * 100));
             $applicationFee = intval($amountCents * ($commissionPercent / 100));
+            $vendeur = User::find($poste->id_user);
 
             $lineItems = [[
                 'price_data' => [
@@ -67,7 +69,7 @@ class CommandeController extends Controller
                 'payment_intent_data' => [
                     'application_fee_amount' => $applicationFee,
                     'transfer_data' => [
-                        'destination' => $request->user()->stripeAccount_id, // compte du vendeur
+                        'destination' => $vendeur->stripeAccount_id, // compte du vendeur
                     ],
                 ],
                 'success_url' => route('success', [], true) . "?session_id={CHECKOUT_SESSION_ID}",
@@ -211,7 +213,7 @@ class CommandeController extends Controller
         $amount = $poste->prix ?? 0;
 
         $commande = Commande::create([
-            'status'                 => 'unpaid',
+            'status'                 => 'pending',
             'total'                  => $amount,
             'session_id'             => '',
             'stripe_id'              => '',
@@ -418,8 +420,8 @@ class CommandeController extends Controller
         $response = $paypal->createSubscription([
             "plan_id" => $planId,
             "application_context" => [
-                "return_url" => route('paypalSuccess', ['commande' => $commande->id]),
-                "cancel_url" => route('paypalCancel', ['commande' => $commande->id]),
+                "return_url" => route('paypalSuccess'),
+                "cancel_url" => route('paypalCancel'),
             ],
         ]);
 
